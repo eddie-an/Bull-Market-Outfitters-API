@@ -18,6 +18,11 @@ const storeItems = new Map([
     [1, {priceInCents: 60499, name: "Mid-Century Modern Wide Dresser"}],
     [2, {priceInCents: 1499, name: "Artifical White Orchid"}],
 ])
+
+app.get('/healthcheck', async (req, res) => {
+    res.status(200).send({message: "Health Check"});
+})
+
 app.post('/create-checkout-session', async (req, res) => {
     try {
         const session = await stripe.checkout.sessions.create({
