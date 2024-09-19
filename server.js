@@ -27,7 +27,7 @@ mongoose.connect(process.env.MONGO_URI)
         const PORT = process.env.SERVER_PORT || 5000;
         app.listen(PORT); // listean for requests
     })
-    .catch(()=> {
+    .catch((error)=> {
         console.log(error)
     });
 
