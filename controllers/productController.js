@@ -1,9 +1,9 @@
 const Product = require("../models/productModel");
 const mongoose = require("mongoose");
 
+// Adds product to database
 const addProduct = async (req, res) => {
     const { name, priceInCents, description, altDescription, quantityInStock, image } = req.body;
-
     try {
         const product = await Product.create({name, priceInCents, description, altDescription, quantityInStock, image});
         res.status(200).json({message: product})
@@ -12,13 +12,14 @@ const addProduct = async (req, res) => {
     }
 }
 
+// Retrieves all products from database
 const getAllProducts = async (req, res) => {
     const products = await Product.find({}).sort({createdAt: -1});
-
-    res.status(200).json({message: products});
+    return res.status(200).json({message: products});
 }
 
 
+// Updates quantity of product from database
 const changeQuantity = async (req, res) => {
     const {id} = req.params;
     

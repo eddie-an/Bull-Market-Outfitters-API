@@ -7,8 +7,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 // import routes
-const stripeRoutes = require('./routes/stripe');
-const databaseRoutes = require('./routes/database');
+const stripeRoutes = require('./routes/stripeRouter');
+const databaseRoutes = require('./routes/databaseRouter');
 
 // express app
 const app = express();
