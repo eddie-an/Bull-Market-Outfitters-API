@@ -1,15 +1,33 @@
-require("dotenv").config()
+// configure environment variables
+require("dotenv").config();
 
-const express = require('express')
-const app = express()
-const cors = require('cors')
-const stripeRoutes = require('./routes/stripe')
+// import modules
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
-app.use(express.json())
+// import routes
+const stripeRoutes = require('./routes/stripe');
+const databaseRoutes = require('./routes/database');
 
+// express app
+const app = express();
+
+// middleware
+app.use(express.json());
 app.use(cors({ origin: process.env.CLIENT_URL }));
 
+// configure routes
 app.use('/stripe' ,stripeRoutes);
+app.use('/api', databaseRoutes);
 
-const PORT = process.env.SERVER_PORT || 5000;
-app.listen(PORT)
+// connect to db
+mongoose.connect(process.env.MONGO_URI)
+    .then(()=> {
+        const PORT = process.env.SERVER_PORT || 5000;
+        app.listen(PORT); // listean for requests
+    })
+    .catch(()=> {
+        console.log(error)
+    });
+

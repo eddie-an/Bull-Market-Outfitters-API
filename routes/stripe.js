@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require('express');
 const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 
 const storeItems = new Map([
