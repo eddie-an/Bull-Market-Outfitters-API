@@ -2,7 +2,7 @@
 Stripe Payment API Gateway for ShopEase application
 
 ### Project description
-This repository contains server side code of the ShopEase application. The front end code is in another repository called shopEase.
+This repository contains server side code of the ShopEase application. The front end code is in another repository called [shopEase](https://github.com/eddie-an/ShopEase).
 
 This application uses the following stack, API integrations, and tools:
 - MongoDB for backend
