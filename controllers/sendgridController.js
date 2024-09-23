@@ -15,7 +15,7 @@ const sendReceiptViaEmail = async (req, res) => {
         text: generateTextReceipt(req.body.items, req.body.session),
         html: generateHtmlReceipt(req.body.items, req.body.session)
     };
-    
+
     try {
         await sgMail.send(msg);
         console.log('Email sent');
@@ -36,7 +36,8 @@ const sendReceiptViaEmail = async (req, res) => {
 // Function to generate the text format of the receipt
 function generateTextReceipt(items, session) {
     let itemList = items.map(item => `${item.name}: ${item.quantity} x $${(item.priceInCents / 100).toFixed(2)}`).join('\n');
-    return `Thank you for your purchase!\n\nItems Purchased:\n${itemList}\n\nTotal: $${(session.amount_total / 100).toFixed(2)}`;
+    return `Thank you for your purchase!\n\nItems Purchased:\n${itemList}\n\nSubtotal: $${(session.amount_subtotal / 100).toFixed(2)}
+    \nShipping cost: $${(session.shipping_cost.amount_total / 100).toFixed(2)}\nTotal: $${(session.amount_total / 100).toFixed(2)}`;
 }
 
 // Function to generate the HTML format of the receipt
@@ -47,6 +48,8 @@ function generateHtmlReceipt(items, session) {
         <p>Thank you for your purchase!</p>
         <h2>Items Purchased:</h2>
         <ul>${itemList}</ul>
+        <p>Subtotal: $${(session.amount_subtotal / 100).toFixed(2)}</p>
+        <p>Shipping cost: $${(session.shipping_cost.amount_total / 100).toFixed(2)}</p>
         <p>Total: $${(session.amount_total / 100).toFixed(2)}</p>
     `;
 }
