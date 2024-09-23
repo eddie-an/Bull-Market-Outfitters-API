@@ -1,5 +1,5 @@
-# ShopEaseStripeAPI
-Stripe Payment API Gateway for ShopEase application
+# ShopEaseAPI
+API Gateway for ShopEase application
 
 ### Project description
 This repository contains server side code of the ShopEase application. The front end code is in another repository called [shopEase](https://github.com/eddie-an/ShopEase).
