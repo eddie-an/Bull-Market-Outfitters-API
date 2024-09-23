@@ -9,6 +9,8 @@ const cors = require('cors');
 // import routes
 const stripeRoutes = require('./routes/stripeRouter');
 const databaseRoutes = require('./routes/databaseRouter');
+const sendgridRoutes = require('./routes/sendgridRouter');
+
 
 // express app
 const app = express();
@@ -20,6 +22,7 @@ app.use(cors({ origin: process.env.CLIENT_URL }));
 // configure routes
 app.use('/stripe' ,stripeRoutes);
 app.use('/api', databaseRoutes);
+app.use('/sendgrid', sendgridRoutes);
 
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
