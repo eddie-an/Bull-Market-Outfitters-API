@@ -8,7 +8,8 @@ const cors = require('cors');
 
 // import routes
 const stripeRoutes = require('./routes/stripeRouter');
-const databaseRoutes = require('./routes/databaseRouter');
+const productRoutes = require('./routes/productRouter');
+const orderRoutes = require('./routes/orderRouter');
 const sendgridRoutes = require('./routes/sendgridRouter');
 
 
@@ -21,7 +22,8 @@ app.use(cors({ origin: process.env.CLIENT_URL }));
 
 // configure routes
 app.use('/stripe' ,stripeRoutes);
-app.use('/api', databaseRoutes);
+app.use('/product', productRoutes);
+app.use('/order', orderRoutes);
 app.use('/sendgrid', sendgridRoutes);
 
 // connect to db

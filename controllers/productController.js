@@ -19,8 +19,8 @@ const getAllProducts = async (req, res) => {
 }
 
 
-// Updates quantity of product from database
-const changeQuantity = async (req, res) => {
+// Updates a product from database
+const updateProduct = async (req, res) => {
     const {id} = req.params;
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -59,6 +59,6 @@ const getProduct = async (req, res) => {
 module.exports = {
     addProduct,
     getAllProducts,
-    changeQuantity,
+    updateProduct,
     getProduct
 }

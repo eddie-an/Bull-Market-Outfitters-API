@@ -5,7 +5,7 @@ const express = require('express');
 const {
     addProduct,
     getAllProducts,
-    changeQuantity,
+    updateProduct,
     getProduct
 } = require("../controllers/productController");
 
@@ -17,6 +17,6 @@ router.get('/get-all-products', getAllProducts);
 
 router.get('/get-product/:id', getProduct);
 
-router.patch('/change-quantity/:id', changeQuantity);
+router.patch('/update-product/:id', updateProduct);
 
 module.exports = router;
