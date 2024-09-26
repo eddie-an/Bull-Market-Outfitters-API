@@ -1,8 +1,8 @@
-# ShopEaseAPI
-API Gateway for ShopEase application
+# Bull Market Outfitters API
+API Gateway for Bull Market Outfitters application
 
 ### Project description
-This repository contains server side code of the ShopEase application. The front end code is in another repository called [shopEase](https://github.com/eddie-an/ShopEase).
+This repository contains server side code of the ShopEase application. The front end code is in another repository called [Bull-Market-Outfitters](https://github.com/eddie-an/Bull-Market-Outfitters).
 
 This application uses the following stack, API integrations, and tools:
 - MongoDB for backend
