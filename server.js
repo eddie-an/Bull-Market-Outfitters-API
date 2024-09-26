@@ -26,6 +26,10 @@ app.use('/product', productRoutes);
 app.use('/order', orderRoutes);
 app.use('/sendgrid', sendgridRoutes);
 
+app.get('/healthcheck', async (req, res) => {
+    res.status(200).send({message: "Health Check"});
+});
+
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
     .then(()=> {

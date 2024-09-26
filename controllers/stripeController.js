@@ -3,10 +3,6 @@ require("dotenv").config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const Product = require("../models/productModel");
 
-const healthcheck = async (req, res) => {
-    res.status(200).send({message: "Health Check"});
-}
-
 const configureCheckoutSession = (requestBody, storeItems) => {
   const expiresAt = Math.floor(Date.now() / 1000) + (30 * 60); // 30 minutes in the future
 
@@ -151,4 +147,4 @@ const getCheckoutSession = async (req, res) => {
 
   
 
-module.exports = {healthcheck, createCheckoutSession, getCheckoutSession};
+module.exports = {createCheckoutSession, getCheckoutSession};

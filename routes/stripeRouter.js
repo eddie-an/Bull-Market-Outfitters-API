@@ -2,9 +2,7 @@ require("dotenv").config();
 
 const express = require('express');
 const router = express.Router();
-const {healthcheck, createCheckoutSession, getCheckoutSession} = require("../controllers/stripeController");
-
-router.get('/healthcheck', healthcheck);
+const {createCheckoutSession, getCheckoutSession} = require("../controllers/stripeController");
 
 router.post('/create-checkout-session', createCheckoutSession);
 
