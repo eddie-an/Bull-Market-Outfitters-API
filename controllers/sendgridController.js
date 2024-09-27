@@ -8,7 +8,7 @@ const sendReceiptViaEmail = async (req, res) => {
     const msg = {
         to: req.body.recipient,
         from: {
-            name: "ShopEase",
+            name: "Bull Market Outfitters",
             email: 'edward.an03@gmail.com' // Make sure this email is verified
         },
         subject: `ShopEase order number #${req.body.session.id}`,
