@@ -11,7 +11,7 @@ const sendReceiptViaEmail = async (req, res) => {
             name: "Bull Market Outfitters",
             email: 'edward.an03@gmail.com' // Make sure this email is verified
         },
-        subject: `ShopEase order number #${req.body.session.id}`,
+        subject: `Bull Market Outfitters order number #${req.body.session.id}`,
         text: generateTextReceipt(req.body.items, req.body.session),
         html: generateHtmlReceipt(req.body.items, req.body.session)
     };
