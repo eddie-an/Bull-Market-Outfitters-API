@@ -25,3 +25,45 @@ To prevent the delay, [Cron-job](https://cron-job.org/en/) is used to ping the A
     - `npm start` or `npm nodemon server.js`
 
 *Note that the running the server in development might have issues as environment variables need to be configured. API keys for Stripe, MongoDB, and Sendgrid must be configured. Not included in the repository for obvious reasons.
+
+### Stripe webhooks (post-checkout fulfillment)
+
+After a customer pays, Stripe sends a `checkout.session.completed` event to `POST /stripe/webhook`. The server then:
+
+1. Saves the order to MongoDB
+2. Decrements product stock
+3. Sends the receipt email via SendGrid
+
+This runs server-side so fulfillment still happens if the user closes the browser after checkout.
+
+**Environment variables**
+
+| Variable | Purpose |
+|----------|---------|
+| `STRIPE_WEBHOOK_SECRET` | Signing secret from the Stripe webhook endpoint |
+
+**Local development with Stripe CLI**
+
+```bash
+stripe listen --forward-to localhost:5000/stripe/webhook
+```
+
+Copy the webhook signing secret the CLI prints and set it as `STRIPE_WEBHOOK_SECRET`.
+
+**Production (Render)**
+
+1. In [Stripe Dashboard → Webhooks](https://dashboard.stripe.com/webhooks), add endpoint: `https://<your-api-host>/stripe/webhook`
+2. Subscribe to `checkout.session.completed`
+3. Add the signing secret to Render as `STRIPE_WEBHOOK_SECRET`
+
+**Checkout flow (client)**
+
+1. `POST /stripe/create-checkout-session` — validates stock server-side, creates the Stripe session, returns `{ url }`.
+2. User pays on Stripe and lands on `/success?session_id=...`.
+3. `GET /stripe/checkout/session/:sessionId` — returns session, line items, and `fulfillment.status`. If payment is complete and fulfillment has not run yet, the server runs the same idempotent fulfillment logic as the webhook (so the success page needs only this one call).
+
+The webhook remains the primary path when the user never opens the success page. Order creation, stock updates, and receipt email are not initiated from the frontend.
+
+**Admin / legacy endpoints**
+
+`POST /order/add-order`, `PATCH /product/update-product/:id`, and `POST /sendgrid/receipt` remain on the API for tooling or admin use; the React app no longer calls them after checkout.

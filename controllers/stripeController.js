@@ -2,6 +2,8 @@ require("dotenv").config();
 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const Product = require("../models/productModel");
+const Order = require("../models/orderModel");
+const { fulfillCheckoutSession } = require("../services/fulfillmentService");
 
 const configureCheckoutSession = (requestBody, storeItems) => {
   const expiresAt = Math.floor(Date.now() / 1000) + (30 * 60); // 30 minutes in the future
@@ -112,11 +114,25 @@ const configureCheckoutSession = (requestBody, storeItems) => {
   return configuration;
 }
 
+const validateCartStock = (cartItems, storeItems) => {
+    for (const item of cartItems) {
+        const storeItem = storeItems.find((product) => product._id.toString() === item.id);
+        if (!storeItem) {
+            throw new Error(`Product with ID ${item.id} not found`);
+        }
+        if (storeItem.quantityInStock < item.quantity) {
+            throw new Error(`Insufficient stock for ${storeItem.name}`);
+        }
+    }
+};
+
 const createCheckoutSession = async (req, res) => {
     try {
 
         // Fetch all products from the database
         const storeItems = await Product.find({}).sort({ createdAt: -1 });
+
+        validateCartStock(req.body.items, storeItems);
 
         // call a function to set up config parameters for stripe checkout session
         const configuration = configureCheckoutSession(req.body, storeItems);
@@ -137,8 +153,30 @@ const getCheckoutSession = async (req, res) => {
     
     try {
       const session = await stripe.checkout.sessions.retrieve(sessionId);
-      const items = JSON.parse(session.metadata.items); // Retrieve and parse the stored items
-      res.json({ session, items });
+      const items = JSON.parse(session.metadata.items);
+
+      let fulfillment = { status: "pending" };
+
+      if (session.payment_status === "paid") {
+        let order = await Order.findOne({ order_id: sessionId });
+
+        if (!order?.isStockUpdated) {
+          try {
+            await fulfillCheckoutSession(session);
+          } catch (error) {
+            console.error(`Fulfillment failed for session ${sessionId}:`, error.message);
+          }
+          order = await Order.findOne({ order_id: sessionId });
+        }
+
+        fulfillment = order?.isStockUpdated
+          ? { status: "complete" }
+          : { status: "pending" };
+      } else {
+        fulfillment = { status: "unpaid" };
+      }
+
+      res.json({ session, items, fulfillment });
     } catch (error) {
       res.status(500).json({ error: error.message });
       console.log(error.message);

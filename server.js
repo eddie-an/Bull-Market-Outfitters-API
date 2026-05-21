@@ -11,10 +11,14 @@ const stripeRoutes = require('./routes/stripeRouter');
 const productRoutes = require('./routes/productRouter');
 const orderRoutes = require('./routes/orderRouter');
 const sendgridRoutes = require('./routes/sendgridRouter');
+const { handleStripeWebhook } = require('./controllers/stripeWebhookController');
 
 
 // express app
 const app = express();
+
+// Stripe webhooks require the raw body for signature verification
+app.post('/stripe/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
 
 // middleware
 app.use(express.json());
