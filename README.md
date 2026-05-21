@@ -45,8 +45,9 @@ This runs server-side so fulfillment still happens if the user closes the browse
 **Local development with Stripe CLI**
 
 ```bash
-stripe listen --forward-to localhost:5000/stripe/webhook
+stripe listen --forward-to localhost:<SERVER_PORT>/stripe/webhook
 ```
+> where SERVER_PORT is the port number defined in the .env file
 
 Copy the webhook signing secret the CLI prints and set it as `STRIPE_WEBHOOK_SECRET`.
 
@@ -60,9 +61,9 @@ Copy the webhook signing secret the CLI prints and set it as `STRIPE_WEBHOOK_SEC
 
 1. `POST /stripe/create-checkout-session` — validates stock server-side, creates the Stripe session, returns `{ url }`.
 2. User pays on Stripe and lands on `/success?session_id=...`.
-3. `GET /stripe/checkout/session/:sessionId` — returns session, line items, and `fulfillment.status`. If payment is complete and fulfillment has not run yet, the server runs the same idempotent fulfillment logic as the webhook (so the success page needs only this one call).
+3. `GET /stripe/checkout/session/:sessionId` — read-only: returns the Stripe session, line items, and `fulfillment.status` from the order record. The success page polls this endpoint until the webhook marks fulfillment complete (or times out).
 
-The webhook remains the primary path when the user never opens the success page. Order creation, stock updates, and receipt email are not initiated from the frontend.
+Fulfillment (order, stock, email) runs only in the `checkout.session.completed` webhook handler. The frontend never triggers it.
 
 **Admin / legacy endpoints**
 

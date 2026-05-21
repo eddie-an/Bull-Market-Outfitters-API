@@ -3,7 +3,6 @@ require("dotenv").config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const Product = require("../models/productModel");
 const Order = require("../models/orderModel");
-const { fulfillCheckoutSession } = require("../services/fulfillmentService");
 
 const configureCheckoutSession = (requestBody, storeItems) => {
   const expiresAt = Math.floor(Date.now() / 1000) + (30 * 60); // 30 minutes in the future
@@ -158,17 +157,7 @@ const getCheckoutSession = async (req, res) => {
       let fulfillment = { status: "pending" };
 
       if (session.payment_status === "paid") {
-        let order = await Order.findOne({ order_id: sessionId });
-
-        if (!order?.isStockUpdated) {
-          try {
-            await fulfillCheckoutSession(session);
-          } catch (error) {
-            console.error(`Fulfillment failed for session ${sessionId}:`, error.message);
-          }
-          order = await Order.findOne({ order_id: sessionId });
-        }
-
+        const order = await Order.findOne({ order_id: sessionId });
         fulfillment = order?.isStockUpdated
           ? { status: "complete" }
           : { status: "pending" };
