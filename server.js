@@ -12,17 +12,14 @@ const productRoutes = require('./routes/productRouter');
 const orderRoutes = require('./routes/orderRouter');
 const sendgridRoutes = require('./routes/sendgridRouter');
 
-
 // express app
 const app = express();
 
-
 // middleware
-app.use(express.json());
 app.use(cors({ origin: process.env.CLIENT_URL }));
 
 // configure routes
-app.use('/stripe' ,stripeRoutes);
+app.use('/stripe', stripeRoutes);
 app.use('/product', productRoutes);
 app.use('/order', orderRoutes);
 app.use('/sendgrid', sendgridRoutes);

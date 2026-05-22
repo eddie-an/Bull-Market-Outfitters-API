@@ -10,6 +10,7 @@ const {
 } = require("../controllers/productController");
 
 const router = express.Router();
+router.use(express.json());
 
 router.post('/add-product', addProduct);
 
